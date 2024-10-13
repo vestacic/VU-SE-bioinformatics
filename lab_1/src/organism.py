@@ -64,6 +64,15 @@ class Organism:
         return {amino_acid: 0 for amino_acid in cls.AMINO_ACIDS}
 
     def calculate_amino_acid_frequency(self) -> None:
+        if self.amino_acid_codon_frequency:
+            self.amino_acid_codon_frequency = (
+                Organism.create_empty_codon_frequency_dict()
+            )
+        if self.amino_acid_dicodon_frequency:
+            self.amino_acid_dicodon_frequency = (
+                Organism.create_empty_dicodon_frequency_dict()
+            )
+
         SequenceHandler.calculate_all_possible_sequence_frequencies(
             dna_sequence=self.dna_sequence,
             codon_frequency=self.amino_acid_codon_frequency,
@@ -71,6 +80,8 @@ class Organism:
         )
 
     def calculate_absolute_amino_acid_frequency(self) -> None:
+        self.calculate_amino_acid_frequency()
+
         total_codon_number = sum(self.amino_acid_codon_frequency.values())
         self.amino_acid_absolute_codon_frequency = {
             codon: Decimal(frequency) / Decimal(total_codon_number)
@@ -82,5 +93,3 @@ class Organism:
             codon: Decimal(frequency) / Decimal(total_dicodon_number)
             for codon, frequency in self.amino_acid_dicodon_frequency.items()
         }
-
-        print(total_codon_number, total_dicodon_number)
