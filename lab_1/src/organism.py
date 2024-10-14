@@ -7,6 +7,10 @@ from sequence_handler import SequenceHandler
 
 
 class Organism:
+    """
+    Class to save given DNA sequence's codon and dicodon absolute and normalized frequencies.
+    """
+
     AMINO_ACIDS = [
         "A",
         "R",
@@ -80,6 +84,10 @@ class Organism:
         )
 
     def calculate_normalized_amino_acid_frequency(self) -> None:
+        """
+        Calculates both normalized and absolute amino acid codon and dicodon frequencies.
+        """
+
         self.calculate_amino_acid_frequency()
 
         total_codon_number = sum(self.amino_acid_codon_frequency.values())

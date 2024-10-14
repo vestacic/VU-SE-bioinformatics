@@ -7,6 +7,12 @@ DATA_FILES_INDEX_RANGE = 4
 
 
 def main() -> None:
+    """
+    Main function that orchestrates the flow:
+    Loads .fasta files, calculates codon and dicodon frequencies,
+    calculates chi-square distance and outputs distance matrixes.
+    """
+
     root_directory_path = Path(__file__).parents[1]
     data_files_paths = file_handler.get_input_data_files_paths(
         root_directory=root_directory_path,
@@ -59,7 +65,7 @@ def main() -> None:
     output_dir = root_directory_path / "output_data"
     file_handler.export_distance_matrix_in_phylip(
         output_dir=output_dir,
-        file_name="codon_distance_matrix.phylip",
+        file_name="codon_distance_matrix",
         matrix_size=DATA_FILES_INDEX_RANGE * 2,
         distance_matrix=codon_distance_matrix,
         names=organism_names,
@@ -67,7 +73,7 @@ def main() -> None:
 
     file_handler.export_distance_matrix_in_phylip(
         output_dir=output_dir,
-        file_name="dicodon_distance_matrix.phylip",
+        file_name="dicodon_distance_matrix",
         matrix_size=DATA_FILES_INDEX_RANGE * 2,
         distance_matrix=dicodon_distance_matrix,
         names=organism_names,
