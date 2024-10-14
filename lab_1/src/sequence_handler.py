@@ -1,14 +1,6 @@
 import numpy as np
 from Bio.Seq import Seq
 
-nucleoid_mapper = {"A": "T", "T": "A", "G": "C", "C": "A"}
-start_codon = np.array(["A", "T", "G"])
-stop_codons = [
-    np.array(["T", "A", "A"]),
-    np.array(["T", "A", "G"]),
-    np.array(["T", "G", "A"]),
-]
-
 
 class SequenceHandler:
     NUCLEOTIDES = np.array(["A", "C", "G", "T"], dtype="<U1")
@@ -27,6 +19,12 @@ class SequenceHandler:
         codon_frequency: dict,
         dicodon_frequency: dict,
     ) -> None:
+        """
+        Calculates codon and dicodon frequencies
+        for both sequence and its reverse complement
+        in all reading frames.
+        """
+
         cls.calculate_sequence_frequencies(
             dna_sequence=dna_sequence,
             codon_frequency=codon_frequency,
@@ -68,6 +66,10 @@ class SequenceHandler:
         codon_frequency: dict,
         dicodon_frequency: dict,
     ) -> None:
+        """
+        Calculates codon and dicodon frequencies for a given sequence.
+        """
+
         all_start_stop_codon_pairs = cls.find_start_stop_codon_pairs(
             dna_sequence=dna_sequence
         )
@@ -99,6 +101,10 @@ class SequenceHandler:
     def calculate_reverse_complement(
         cls, dna_sequence: np.ndarray
     ) -> np.ndarray:
+        """
+        Finds reverse complement for given sequence.
+        """
+
         index_map = np.searchsorted(cls.NUCLEOTIDES, dna_sequence)
         reverse_complement = cls.COMPLEMENTS[index_map]
         return reverse_complement[::-1]
@@ -107,6 +113,10 @@ class SequenceHandler:
     def find_start_stop_codon_pairs(
         cls, dna_sequence: np.ndarray
     ) -> list[tuple[int, int]]:
+        """
+        Finds all start and stop codon pairs that do not have stop codon in between.
+        """
+
         sequence_length = len(dna_sequence)
 
         pairs = []
@@ -133,6 +143,11 @@ class SequenceHandler:
     def filter_longest_pair_for_each_codon(
         cls, start_stop_codon_pairs: np.ndarray
     ) -> dict:
+        """
+        For each stop codon filters out the start codon
+        that is furthest from it and does not have another stop codon in between.
+        """
+
         starts = start_stop_codon_pairs[:, 0]
         stops = start_stop_codon_pairs[:, 1]
 
@@ -150,9 +165,15 @@ class SequenceHandler:
     def filter_pairs_smaller_than(
         cls, start_stop_codon_pairs: np.ndarray, min_length: int = 100
     ) -> dict:
-        lengths = start_stop_codon_pairs[:, 1] - start_stop_codon_pairs[:, 0]
+        """
+        Filters out start and stop codon pairs that have length less than 100 bp.
+        """
 
-        filtered_pairs = start_stop_codon_pairs[lengths >= min_length - 1]
+        lengths = (
+            start_stop_codon_pairs[:, 1] - start_stop_codon_pairs[:, 0] + 3
+        )
+
+        filtered_pairs = start_stop_codon_pairs[lengths >= min_length]
 
         return filtered_pairs
 
@@ -162,6 +183,10 @@ class SequenceHandler:
         initial_dna_sequence: np.ndarray,
         start_stop_codon_pairs: np.ndarray,
     ) -> np.ndarray:
+        """
+        Cuts sequences from given indices.
+        """
+
         cut_dna_sequences = np.empty(len(start_stop_codon_pairs), dtype=object)
         for i, (start, stop) in enumerate(start_stop_codon_pairs):
             cut_dna_sequences[i] = "".join(
