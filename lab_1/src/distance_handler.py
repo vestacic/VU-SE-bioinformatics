@@ -1,4 +1,4 @@
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal
 
 
 def calculate_chi_square_distance(
@@ -13,4 +13,6 @@ def calculate_chi_square_distance(
                 frequency_1 + frequency_2
             )
 
-    return chi_square_distance
+    return chi_square_distance.quantize(
+        Decimal("0.0001"), rounding=ROUND_HALF_UP
+    )

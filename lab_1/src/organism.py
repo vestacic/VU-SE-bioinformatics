@@ -79,7 +79,7 @@ class Organism:
             dicodon_frequency=self.amino_acid_dicodon_frequency,
         )
 
-    def calculate_absolute_amino_acid_frequency(self) -> None:
+    def calculate_normalized_amino_acid_frequency(self) -> None:
         self.calculate_amino_acid_frequency()
 
         total_codon_number = sum(self.amino_acid_codon_frequency.values())

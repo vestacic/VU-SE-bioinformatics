@@ -18,7 +18,7 @@ def main() -> None:
     ]
 
     [
-        organism.calculate_absolute_amino_acid_frequency()
+        organism.calculate_normalized_amino_acid_frequency()
         for organism in organisms
     ]
 
